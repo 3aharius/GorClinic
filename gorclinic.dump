@@ -1,0 +1,1516 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: create_permissions_by_page(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION create_permissions_by_page() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  DECLARE r RECORD;
+BEGIN
+  FOR r IN SELECT role.roleid FROM role
+  LOOP
+    INSERT INTO permission (role_id, page_id) VALUES (r.roleid, New.page_id);
+  END LOOP;
+  return NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.create_permissions_by_page() OWNER TO postgres;
+
+--
+-- Name: create_permissions_by_role(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION create_permissions_by_role() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  DECLARE r RECORD;
+BEGIN
+  FOR r IN SELECT page.page_id FROM page
+  LOOP
+    INSERT INTO permission (role_id, page_id) VALUES (NEW.roleid, r.page_id);
+  END LOOP;
+  return NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.create_permissions_by_role() OWNER TO postgres;
+
+--
+-- Name: delete_permission_by_page(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION delete_permission_by_page() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	DELETE FROM permission WHERE permission.page_id = Old.page_id;
+    return OLD;
+END;
+$$;
+
+
+ALTER FUNCTION public.delete_permission_by_page() OWNER TO postgres;
+
+--
+-- Name: delete_permissions_by_role(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION delete_permissions_by_role() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	DELETE FROM permission WHERE permission.role_id = Old.roleid;
+    return OLD;
+END;
+$$;
+
+
+ALTER FUNCTION public.delete_permissions_by_role() OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: area; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE area (
+    areanumber integer NOT NULL,
+    adresses character varying(512),
+    area_id integer NOT NULL
+);
+
+
+ALTER TABLE public.area OWNER TO postgres;
+
+--
+-- Name: area_area_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE area_area_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.area_area_id_seq OWNER TO postgres;
+
+--
+-- Name: area_area_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE area_area_id_seq OWNED BY area.area_id;
+
+
+--
+-- Name: cabinet; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE cabinet (
+    cabinetid integer NOT NULL,
+    number character varying(4)
+);
+
+
+ALTER TABLE public.cabinet OWNER TO postgres;
+
+--
+-- Name: cabinet_cabinetid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE cabinet_cabinetid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cabinet_cabinetid_seq OWNER TO postgres;
+
+--
+-- Name: cabinet_cabinetid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE cabinet_cabinetid_seq OWNED BY cabinet.cabinetid;
+
+
+--
+-- Name: client; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE client (
+    clientid integer NOT NULL,
+    fio character varying(512),
+    adress character varying(512)
+);
+
+
+ALTER TABLE public.client OWNER TO postgres;
+
+--
+-- Name: client_clientid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE client_clientid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.client_clientid_seq OWNER TO postgres;
+
+--
+-- Name: client_clientid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE client_clientid_seq OWNED BY client.clientid;
+
+
+--
+-- Name: department; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE department (
+    departmentid integer NOT NULL,
+    name character varying(255)
+);
+
+
+ALTER TABLE public.department OWNER TO postgres;
+
+--
+-- Name: department_departmentid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE department_departmentid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.department_departmentid_seq OWNER TO postgres;
+
+--
+-- Name: department_departmentid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE department_departmentid_seq OWNED BY department.departmentid;
+
+
+--
+-- Name: docstatus; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE docstatus (
+    docstatusid integer NOT NULL,
+    status character varying(80)
+);
+
+
+ALTER TABLE public.docstatus OWNER TO postgres;
+
+--
+-- Name: docstatus_docstatusid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE docstatus_docstatusid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.docstatus_docstatusid_seq OWNER TO postgres;
+
+--
+-- Name: docstatus_docstatusid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE docstatus_docstatusid_seq OWNED BY docstatus.docstatusid;
+
+
+--
+-- Name: doctor; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE doctor (
+    doctorid integer NOT NULL,
+    fio character varying(512) NOT NULL,
+    adress character varying(512),
+    homephone character varying(30),
+    mobilephone character varying(30),
+    schedule character varying(255),
+    specializationid integer NOT NULL,
+    departmentid integer NOT NULL,
+    areaid integer NOT NULL,
+    cabinetid integer NOT NULL,
+    docstatusid integer NOT NULL
+);
+
+
+ALTER TABLE public.doctor OWNER TO postgres;
+
+--
+-- Name: doctor_doctorid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE doctor_doctorid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.doctor_doctorid_seq OWNER TO postgres;
+
+--
+-- Name: doctor_doctorid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE doctor_doctorid_seq OWNED BY doctor.doctorid;
+
+
+--
+-- Name: medicalcard; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE medicalcard (
+    medicalcardid integer NOT NULL,
+    number character varying(10),
+    clientid integer NOT NULL
+);
+
+
+ALTER TABLE public.medicalcard OWNER TO postgres;
+
+--
+-- Name: medicalcard_clientid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE medicalcard_clientid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.medicalcard_clientid_seq OWNER TO postgres;
+
+--
+-- Name: medicalcard_clientid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE medicalcard_clientid_seq OWNED BY medicalcard.clientid;
+
+
+--
+-- Name: medicalcard_medicalcardid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE medicalcard_medicalcardid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.medicalcard_medicalcardid_seq OWNER TO postgres;
+
+--
+-- Name: medicalcard_medicalcardid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE medicalcard_medicalcardid_seq OWNED BY medicalcard.medicalcardid;
+
+
+--
+-- Name: page; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE page (
+    page_id integer NOT NULL,
+    url character varying(500) NOT NULL
+);
+
+
+ALTER TABLE public.page OWNER TO postgres;
+
+--
+-- Name: page_page_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE page_page_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.page_page_id_seq OWNER TO postgres;
+
+--
+-- Name: page_page_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE page_page_id_seq OWNED BY page.page_id;
+
+
+--
+-- Name: permission; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE permission (
+    permission_id integer NOT NULL,
+    role_id integer NOT NULL,
+    page_id integer NOT NULL,
+    is_allaw boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.permission OWNER TO postgres;
+
+--
+-- Name: permission_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE permission_permission_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.permission_permission_id_seq OWNER TO postgres;
+
+--
+-- Name: permission_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE permission_permission_id_seq OWNED BY permission.permission_id;
+
+
+--
+-- Name: role; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE role (
+    name character varying(255) NOT NULL,
+    roleid integer DEFAULT nextval(('public.role_roleid_seq'::text)::regclass) NOT NULL
+);
+
+
+ALTER TABLE public.role OWNER TO postgres;
+
+--
+-- Name: role_roleid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE role_roleid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+ALTER TABLE public.role_roleid_seq OWNER TO postgres;
+
+--
+-- Name: specialization; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE specialization (
+    specializationid integer NOT NULL,
+    name character varying(512)
+);
+
+
+ALTER TABLE public.specialization OWNER TO postgres;
+
+--
+-- Name: specialization_specializationid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE specialization_specializationid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.specialization_specializationid_seq OWNER TO postgres;
+
+--
+-- Name: specialization_specializationid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE specialization_specializationid_seq OWNED BY specialization.specializationid;
+
+
+--
+-- Name: systemuser; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE systemuser (
+    systemuserid integer NOT NULL,
+    username character varying(255),
+    password character varying(255),
+    roleid integer NOT NULL,
+    is_active boolean DEFAULT true NOT NULL
+);
+
+
+ALTER TABLE public.systemuser OWNER TO postgres;
+
+--
+-- Name: systemuser_systemuserid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE systemuser_systemuserid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.systemuser_systemuserid_seq OWNER TO postgres;
+
+--
+-- Name: systemuser_systemuserid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE systemuser_systemuserid_seq OWNED BY systemuser.systemuserid;
+
+
+--
+-- Name: ticket; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE ticket (
+    ticketid integer NOT NULL,
+    receptiondate date,
+    doctorid integer,
+    clientid integer
+);
+
+
+ALTER TABLE public.ticket OWNER TO postgres;
+
+--
+-- Name: ticket_ticketid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE ticket_ticketid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.ticket_ticketid_seq OWNER TO postgres;
+
+--
+-- Name: ticket_ticketid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE ticket_ticketid_seq OWNED BY ticket.ticketid;
+
+
+--
+-- Name: topic; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE topic (
+    topicid integer NOT NULL,
+    content text,
+    title character varying(500) NOT NULL
+);
+
+
+ALTER TABLE public.topic OWNER TO postgres;
+
+--
+-- Name: topic_topicid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE topic_topicid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.topic_topicid_seq OWNER TO postgres;
+
+--
+-- Name: topic_topicid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE topic_topicid_seq OWNED BY topic.topicid;
+
+
+--
+-- Name: area_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY area ALTER COLUMN area_id SET DEFAULT nextval('area_area_id_seq'::regclass);
+
+
+--
+-- Name: cabinetid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY cabinet ALTER COLUMN cabinetid SET DEFAULT nextval('cabinet_cabinetid_seq'::regclass);
+
+
+--
+-- Name: clientid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY client ALTER COLUMN clientid SET DEFAULT nextval('client_clientid_seq'::regclass);
+
+
+--
+-- Name: departmentid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY department ALTER COLUMN departmentid SET DEFAULT nextval('department_departmentid_seq'::regclass);
+
+
+--
+-- Name: docstatusid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY docstatus ALTER COLUMN docstatusid SET DEFAULT nextval('docstatus_docstatusid_seq'::regclass);
+
+
+--
+-- Name: doctorid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor ALTER COLUMN doctorid SET DEFAULT nextval('doctor_doctorid_seq'::regclass);
+
+
+--
+-- Name: medicalcardid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY medicalcard ALTER COLUMN medicalcardid SET DEFAULT nextval('medicalcard_medicalcardid_seq'::regclass);
+
+
+--
+-- Name: clientid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY medicalcard ALTER COLUMN clientid SET DEFAULT nextval('medicalcard_clientid_seq'::regclass);
+
+
+--
+-- Name: page_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY page ALTER COLUMN page_id SET DEFAULT nextval('page_page_id_seq'::regclass);
+
+
+--
+-- Name: permission_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY permission ALTER COLUMN permission_id SET DEFAULT nextval('permission_permission_id_seq'::regclass);
+
+
+--
+-- Name: specializationid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY specialization ALTER COLUMN specializationid SET DEFAULT nextval('specialization_specializationid_seq'::regclass);
+
+
+--
+-- Name: systemuserid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY systemuser ALTER COLUMN systemuserid SET DEFAULT nextval('systemuser_systemuserid_seq'::regclass);
+
+
+--
+-- Name: ticketid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY ticket ALTER COLUMN ticketid SET DEFAULT nextval('ticket_ticketid_seq'::regclass);
+
+
+--
+-- Name: topicid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY topic ALTER COLUMN topicid SET DEFAULT nextval('topic_topicid_seq'::regclass);
+
+
+--
+-- Data for Name: area; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY area (areanumber, adresses, area_id) FROM stdin;
+22	Корженевского	4
+11	Притицкого	5
+2	Кампусная	6
+\.
+
+
+--
+-- Name: area_area_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('area_area_id_seq', 19, true);
+
+
+--
+-- Data for Name: cabinet; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY cabinet (cabinetid, number) FROM stdin;
+7	101
+8	102
+9	101а
+10	101б
+11	103
+12	104
+13	105
+14	106
+15	107
+16	108
+17	109
+18	110
+\.
+
+
+--
+-- Name: cabinet_cabinetid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('cabinet_cabinetid_seq', 20, true);
+
+
+--
+-- Data for Name: client; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY client (clientid, fio, adress) FROM stdin;
+1	Кондратов Игорь Николаевич	Кузнецова 23-18
+2	Петрушка Раиса Павловна	Петросяна 12-75
+\.
+
+
+--
+-- Name: client_clientid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('client_clientid_seq', 5, true);
+
+
+--
+-- Data for Name: department; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY department (departmentid, name) FROM stdin;
+1	Хирургия
+3	Стоматология
+4	Кардилолгия
+5	Урология
+6	Геникология
+7	Терапевтическое
+9	Протезирование
+11	Реанимация
+\.
+
+
+--
+-- Name: department_departmentid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('department_departmentid_seq', 12, true);
+
+
+--
+-- Data for Name: docstatus; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY docstatus (docstatusid, status) FROM stdin;
+1	Болен
+2	В отпуске
+3	Работает
+\.
+
+
+--
+-- Name: docstatus_docstatusid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('docstatus_docstatusid_seq', 5, true);
+
+
+--
+-- Data for Name: doctor; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY doctor (doctorid, fio, adress, homephone, mobilephone, schedule, specializationid, departmentid, areaid, cabinetid, docstatusid) FROM stdin;
+1	Пупкин Василий Иванович	Кочергина 34-18	345-16-82	+375 29 992 55 76	четные - 1, нечетные - 2	2	1	6	10	3
+10	Дегтярев Виталий Иванович	Казинца 4 - 22	+375 29 333 44 23	345 77 21	Пн,Ср,Пт 9-11 Вт, Чт 14 - 15	3	11	5	16	2
+\.
+
+
+--
+-- Name: doctor_doctorid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('doctor_doctorid_seq', 11, true);
+
+
+--
+-- Data for Name: medicalcard; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY medicalcard (medicalcardid, number, clientid) FROM stdin;
+\.
+
+
+--
+-- Name: medicalcard_clientid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('medicalcard_clientid_seq', 3, true);
+
+
+--
+-- Name: medicalcard_medicalcardid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('medicalcard_medicalcardid_seq', 32, true);
+
+
+--
+-- Data for Name: page; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY page (page_id, url) FROM stdin;
+1	/Index/index
+4	/Role/index
+\.
+
+
+--
+-- Name: page_page_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('page_page_id_seq', 7, true);
+
+
+--
+-- Data for Name: permission; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY permission (permission_id, role_id, page_id, is_allaw) FROM stdin;
+22	10	1	t
+23	10	4	f
+20	9	1	t
+21	9	4	t
+\.
+
+
+--
+-- Name: permission_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('permission_permission_id_seq', 68, true);
+
+
+--
+-- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY role (name, roleid) FROM stdin;
+Юзер	9
+Админ	10
+\.
+
+
+--
+-- Name: role_roleid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('role_roleid_seq', 11, true);
+
+
+--
+-- Data for Name: specialization; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY specialization (specializationid, name) FROM stdin;
+2	Хирург
+3	Стоматолог
+4	Кардиолог
+5	Потологоанатом
+6	Терапевт
+7	Анастэзиолог
+8	Педиатр
+\.
+
+
+--
+-- Name: specialization_specializationid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('specialization_specializationid_seq', 10, true);
+
+
+--
+-- Data for Name: systemuser; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY systemuser (systemuserid, username, password, roleid, is_active) FROM stdin;
+3	никанор	123	10	t
+5	рпрп	папа	9	f
+\.
+
+
+--
+-- Name: systemuser_systemuserid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('systemuser_systemuserid_seq', 6, true);
+
+
+--
+-- Data for Name: ticket; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY ticket (ticketid, receptiondate, doctorid, clientid) FROM stdin;
+\.
+
+
+--
+-- Name: ticket_ticketid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('ticket_ticketid_seq', 1, false);
+
+
+--
+-- Data for Name: topic; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY topic (topicid, content, title) FROM stdin;
+1	Национальный банк посоветовал банкам поменять политику курсообразования в обменных пунктах. С завтрашнего дня, 23 декабря, курс покупки у населения валюты должен быть меньше реального курса продажи на 5%. Это требование регулятор озвучил сегодня, сообщил FINANCE.TUT.BY представитель банковских кругов, присутствовавший на совещании в Нацбанке.\r\n\r\nТаким образом, на табло в обменном пункте с завтрашнего дня курс покупки доллара будет выше, чем курс продажи. Ведь в обменнике курс указывается без учета сбора в 30%. \r\n\r\nПоскольку курс Нацбанка на 23 декабря составляет 10 930 рублей за доллар, то курс продажи в обменнике составит примерно 11 150 рублей (с учетом рекомендации о том, что разница не должна быть больше 2%). Реальная же цена, по которой можно купить доллар, будет 14 490 (с учетом сбора в 30%). Курс, по которому банк купит у населения доллар, согласно новым требованиям Нацбанка, составит 13 770 рублей.\r\n	Банки обязали повысить курс покупки валюты у населения\r\n
+\.
+
+
+--
+-- Name: topic_topicid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('topic_topicid_seq', 1, true);
+
+
+--
+-- Name: area_areanumber_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY area
+    ADD CONSTRAINT area_areanumber_key UNIQUE (areanumber);
+
+
+--
+-- Name: area_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY area
+    ADD CONSTRAINT area_pkey PRIMARY KEY (area_id);
+
+
+--
+-- Name: cabinet_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY cabinet
+    ADD CONSTRAINT cabinet_pkey PRIMARY KEY (cabinetid);
+
+
+--
+-- Name: client_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY client
+    ADD CONSTRAINT client_pkey PRIMARY KEY (clientid);
+
+
+--
+-- Name: department_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY department
+    ADD CONSTRAINT department_pkey PRIMARY KEY (departmentid);
+
+
+--
+-- Name: docstatus_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY docstatus
+    ADD CONSTRAINT docstatus_pkey PRIMARY KEY (docstatusid);
+
+
+--
+-- Name: doctor_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT doctor_pkey PRIMARY KEY (doctorid);
+
+
+--
+-- Name: medicalcard_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY medicalcard
+    ADD CONSTRAINT medicalcard_pkey PRIMARY KEY (medicalcardid);
+
+
+--
+-- Name: page_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY page
+    ADD CONSTRAINT page_pkey PRIMARY KEY (page_id);
+
+
+--
+-- Name: page_url_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY page
+    ADD CONSTRAINT page_url_key UNIQUE (url);
+
+
+--
+-- Name: permission_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY permission
+    ADD CONSTRAINT permission_pkey PRIMARY KEY (permission_id);
+
+
+--
+-- Name: role_Name_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY role
+    ADD CONSTRAINT "role_Name_key" UNIQUE (name);
+
+
+--
+-- Name: role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY role
+    ADD CONSTRAINT role_pkey PRIMARY KEY (roleid);
+
+
+--
+-- Name: specialization_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY specialization
+    ADD CONSTRAINT specialization_pkey PRIMARY KEY (specializationid);
+
+
+--
+-- Name: systemuser_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY systemuser
+    ADD CONSTRAINT systemuser_pkey PRIMARY KEY (systemuserid);
+
+
+--
+-- Name: ticket_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY ticket
+    ADD CONSTRAINT ticket_pkey PRIMARY KEY (ticketid);
+
+
+--
+-- Name: topic_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY topic
+    ADD CONSTRAINT topic_pkey PRIMARY KEY (topicid);
+
+
+--
+-- Name: create_permissions_on_page_create; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER create_permissions_on_page_create AFTER INSERT ON page FOR EACH ROW EXECUTE PROCEDURE create_permissions_by_page();
+
+
+--
+-- Name: create_permissions_on_role_create; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER create_permissions_on_role_create AFTER INSERT ON role FOR EACH ROW EXECUTE PROCEDURE create_permissions_by_role();
+
+
+--
+-- Name: delete_permission_on_page_delete; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER delete_permission_on_page_delete BEFORE DELETE ON page FOR EACH ROW EXECUTE PROCEDURE delete_permission_by_page();
+
+
+--
+-- Name: delete_permission_on_role_delete; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER delete_permission_on_role_delete BEFORE DELETE ON role FOR EACH ROW EXECUTE PROCEDURE delete_permissions_by_role();
+
+
+--
+-- Name: doctor_cabinetid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT doctor_cabinetid_fkey FOREIGN KEY (cabinetid) REFERENCES cabinet(cabinetid);
+
+
+--
+-- Name: doctor_departmentid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT doctor_departmentid_fkey FOREIGN KEY (departmentid) REFERENCES department(departmentid);
+
+
+--
+-- Name: doctor_docstatusid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT doctor_docstatusid_fkey FOREIGN KEY (docstatusid) REFERENCES docstatus(docstatusid);
+
+
+--
+-- Name: doctor_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT doctor_fk FOREIGN KEY (areaid) REFERENCES area(area_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: doctor_specializationid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT doctor_specializationid_fkey FOREIGN KEY (specializationid) REFERENCES specialization(specializationid);
+
+
+--
+-- Name: fk7bc58a4fb719ad5c; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY medicalcard
+    ADD CONSTRAINT fk7bc58a4fb719ad5c FOREIGN KEY (clientid) REFERENCES client(clientid) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: fk9bd7f45373318efa; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY systemuser
+    ADD CONSTRAINT fk9bd7f45373318efa FOREIGN KEY (roleid) REFERENCES role(roleid);
+
+
+--
+-- Name: fkb887cab668c41f15; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY permission
+    ADD CONSTRAINT fkb887cab668c41f15 FOREIGN KEY (page_id) REFERENCES page(page_id);
+
+
+--
+-- Name: fkb887cab697da218e; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY permission
+    ADD CONSTRAINT fkb887cab697da218e FOREIGN KEY (role_id) REFERENCES role(roleid);
+
+
+--
+-- Name: fkce4590ca684f8411; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT fkce4590ca684f8411 FOREIGN KEY (specializationid) REFERENCES specialization(specializationid);
+
+
+--
+-- Name: fkce4590ca7c0a429c; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT fkce4590ca7c0a429c FOREIGN KEY (departmentid) REFERENCES department(departmentid);
+
+
+--
+-- Name: fkce4590ca8261939b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT fkce4590ca8261939b FOREIGN KEY (areaid) REFERENCES area(area_id);
+
+
+--
+-- Name: fkce4590cab1e7575b; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT fkce4590cab1e7575b FOREIGN KEY (cabinetid) REFERENCES cabinet(cabinetid);
+
+
+--
+-- Name: fkce4590caf9c47c5e; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY doctor
+    ADD CONSTRAINT fkce4590caf9c47c5e FOREIGN KEY (docstatusid) REFERENCES docstatus(docstatusid);
+
+
+--
+-- Name: fkffa692a0ab828368; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY ticket
+    ADD CONSTRAINT fkffa692a0ab828368 FOREIGN KEY (doctorid) REFERENCES doctor(doctorid);
+
+
+--
+-- Name: fkffa692a0b719ad5c; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY ticket
+    ADD CONSTRAINT fkffa692a0b719ad5c FOREIGN KEY (clientid) REFERENCES client(clientid);
+
+
+--
+-- Name: medicalcard_clientid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY medicalcard
+    ADD CONSTRAINT medicalcard_clientid_fkey FOREIGN KEY (clientid) REFERENCES client(clientid);
+
+
+--
+-- Name: permission_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY permission
+    ADD CONSTRAINT permission_fk FOREIGN KEY (role_id) REFERENCES role(roleid) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: permission_fk1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY permission
+    ADD CONSTRAINT permission_fk1 FOREIGN KEY (page_id) REFERENCES page(page_id);
+
+
+--
+-- Name: systemuser_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY systemuser
+    ADD CONSTRAINT systemuser_fk FOREIGN KEY (roleid) REFERENCES role(roleid) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: ticket_clientid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY ticket
+    ADD CONSTRAINT ticket_clientid_fkey FOREIGN KEY (clientid) REFERENCES client(clientid);
+
+
+--
+-- Name: ticket_doctorid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY ticket
+    ADD CONSTRAINT ticket_doctorid_fkey FOREIGN KEY (doctorid) REFERENCES doctor(doctorid);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- Name: area; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE area FROM PUBLIC;
+REVOKE ALL ON TABLE area FROM postgres;
+GRANT ALL ON TABLE area TO postgres;
+
+
+--
+-- Name: area_area_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE area_area_id_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE area_area_id_seq FROM postgres;
+GRANT ALL ON SEQUENCE area_area_id_seq TO postgres;
+
+
+--
+-- Name: cabinet; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE cabinet FROM PUBLIC;
+REVOKE ALL ON TABLE cabinet FROM postgres;
+GRANT ALL ON TABLE cabinet TO postgres;
+
+
+--
+-- Name: cabinet_cabinetid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE cabinet_cabinetid_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE cabinet_cabinetid_seq FROM postgres;
+GRANT ALL ON SEQUENCE cabinet_cabinetid_seq TO postgres;
+
+
+--
+-- Name: client; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE client FROM PUBLIC;
+REVOKE ALL ON TABLE client FROM postgres;
+GRANT ALL ON TABLE client TO postgres;
+
+
+--
+-- Name: client_clientid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE client_clientid_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE client_clientid_seq FROM postgres;
+GRANT ALL ON SEQUENCE client_clientid_seq TO postgres;
+
+
+--
+-- Name: department; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE department FROM PUBLIC;
+REVOKE ALL ON TABLE department FROM postgres;
+GRANT ALL ON TABLE department TO postgres;
+
+
+--
+-- Name: department_departmentid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE department_departmentid_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE department_departmentid_seq FROM postgres;
+GRANT ALL ON SEQUENCE department_departmentid_seq TO postgres;
+
+
+--
+-- Name: docstatus; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE docstatus FROM PUBLIC;
+REVOKE ALL ON TABLE docstatus FROM postgres;
+GRANT ALL ON TABLE docstatus TO postgres;
+
+
+--
+-- Name: docstatus_docstatusid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE docstatus_docstatusid_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE docstatus_docstatusid_seq FROM postgres;
+GRANT ALL ON SEQUENCE docstatus_docstatusid_seq TO postgres;
+
+
+--
+-- Name: doctor; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE doctor FROM PUBLIC;
+REVOKE ALL ON TABLE doctor FROM postgres;
+GRANT ALL ON TABLE doctor TO postgres;
+
+
+--
+-- Name: doctor_doctorid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE doctor_doctorid_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE doctor_doctorid_seq FROM postgres;
+GRANT ALL ON SEQUENCE doctor_doctorid_seq TO postgres;
+
+
+--
+-- Name: medicalcard; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE medicalcard FROM PUBLIC;
+REVOKE ALL ON TABLE medicalcard FROM postgres;
+GRANT ALL ON TABLE medicalcard TO postgres;
+
+
+--
+-- Name: medicalcard_medicalcardid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE medicalcard_medicalcardid_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE medicalcard_medicalcardid_seq FROM postgres;
+GRANT ALL ON SEQUENCE medicalcard_medicalcardid_seq TO postgres;
+
+
+--
+-- Name: specialization; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE specialization FROM PUBLIC;
+REVOKE ALL ON TABLE specialization FROM postgres;
+GRANT ALL ON TABLE specialization TO postgres;
+
+
+--
+-- Name: specialization_specializationid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE specialization_specializationid_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE specialization_specializationid_seq FROM postgres;
+GRANT ALL ON SEQUENCE specialization_specializationid_seq TO postgres;
+
+
+--
+-- Name: systemuser; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE systemuser FROM PUBLIC;
+REVOKE ALL ON TABLE systemuser FROM postgres;
+GRANT ALL ON TABLE systemuser TO postgres;
+
+
+--
+-- Name: systemuser_systemuserid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE systemuser_systemuserid_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE systemuser_systemuserid_seq FROM postgres;
+GRANT ALL ON SEQUENCE systemuser_systemuserid_seq TO postgres;
+
+
+--
+-- Name: ticket; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE ticket FROM PUBLIC;
+REVOKE ALL ON TABLE ticket FROM postgres;
+GRANT ALL ON TABLE ticket TO postgres;
+
+
+--
+-- Name: ticket_ticketid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE ticket_ticketid_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE ticket_ticketid_seq FROM postgres;
+GRANT ALL ON SEQUENCE ticket_ticketid_seq TO postgres;
+
+
+--
+-- Name: topic; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE topic FROM PUBLIC;
+REVOKE ALL ON TABLE topic FROM postgres;
+GRANT ALL ON TABLE topic TO postgres;
+
+
+--
+-- Name: topic_topicid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON SEQUENCE topic_topicid_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE topic_topicid_seq FROM postgres;
+GRANT ALL ON SEQUENCE topic_topicid_seq TO postgres;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

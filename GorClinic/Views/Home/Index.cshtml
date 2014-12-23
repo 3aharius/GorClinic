@@ -1,0 +1,116 @@
+﻿@{
+    Layout = "~/Views/MainLayout.cshtml";
+    ViewBag.Title = "Index";
+}
+@model List<GorClinic.db.Models.VewModel.TopicVMItem>
+<table width="98%" border="0" cellspacing="0" cellpadding="0">
+    @foreach(var item in Model){
+	    <tr class="topic">
+		    <td>
+                <span class="hidden topic-id">@Html.DisplayFor(id => item.TopicId)</span>
+                <div class="heafing">@Html.DisplayFor(title => item.Title)</div>
+                <div class="text">@Html.DisplayFor(content => item.Content)</div>
+                <div class="topic-managmnent">
+                    <a href="javascript:void(0);" id="topic-edit">редактировать</a>
+                    <a href="javascript:void(0);" id="topic-delete">удалить</a>
+                </div>
+		    </td>
+	    </tr>
+    }
+</table>
+<a href="javascript:void(0);" onclick="showPopUp();" class="add-link">Добавить новость</a>
+<div class="pop-up hidden">
+    <div class="overlay"></div>
+    <div class="pop-up-window">
+        <h2 class="popup-header">Редактирование новости</h2>
+        <div class="pop-up-form">
+            <input type="hidden" name="topic-id"/>
+            <table class="fields-table">
+                <tr>
+                    <td><label for="topic-title" class="label">Заголовок</label></td>
+                    <td><input type="text" placeholder="Заголовок" name="topic-title" id="topic-title"/></td>
+                </tr>
+            </table>
+            <label for="topic-content" style="float:left;" class="label">Содержимое</label>
+            <textarea name="topic-content" id="topic-content"></textarea>
+        </div>
+        <div class="pop-up-button-bar">
+            <button id="save">Сохранить</button>
+            <button id="cancel">Закрыть</button>
+        </div>
+        <div class="err-msg"></div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".topic-managmnent > a#topic-edit").click(function () {
+            var td = $(this).parent().parent();
+            var topicId = $(".topic-id", td).text();
+            var topicTitle = $(".heafing", td).text();
+            var topicContent = $(".text", td).text();
+            showPopUp(topicId, topicTitle, topicContent);
+        });
+        $(".topic-managmnent > a#topic-delete").click(function () {
+            var td = $(this).parent().parent();
+            var topicId = $(".topic-id", td).text();
+            deleteData(topicId);
+        });
+        $("button#save").click(function () {
+            var title = $(".pop-up-form input[name='topic-title']").val();
+            var content = $(".pop-up-form textarea[name='topic-content']").val();
+            if (!title || !content) {
+                showErrorMsg("заполните все поля");
+                return;
+            }
+            var id = $(".pop-up-form input[name='topic-id']").val();
+            sendData(id, title, content);
+        });
+        $("button#cancel").click(function () {
+            $(".pop-up").addClass("hidden");
+            showErrorMsg("");
+        });
+    });
+    function showPopUp(id, title, content) {
+        var topicId = "";
+        var topicTitle = "";
+        var topicContent = "";
+        if (id && title && content) {
+            topicTitle = title;
+            topicContent = content;
+            topicId = id;
+        }
+        $(".pop-up-form input[name='topic-id']").val(topicId);
+        $(".pop-up-form input[name='topic-title']").val(topicTitle);
+        $(".pop-up-form textarea[name='topic-content']").val(topicContent);
+        $("div.pop-up").removeClass("hidden");
+    }
+    function sendData(id, title, content) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Upsert")',
+            data: { id: id, title: title, content: content },
+            cache: false,
+            success: function () { window.location = window.location; },
+            error: function (xhr, ajaxOptions, thrownError) {
+                showErrorMsg(thrownError);
+            },
+            dataType: "html"
+        });
+    }
+    function showErrorMsg(text) {
+        $(".pop-up-window .err-msg").text(text);
+    }
+    function deleteData(id) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Delete")',
+            data: { id: id },
+            cache: false,
+            success: function () { window.location = window.location; },
+            error: function (xhr, ajaxOptions, thrownError) {
+                showErrorMsg(thrownError);
+            },
+            dataType: "html"
+        });
+    }
+</script>

@@ -1,0 +1,301 @@
+﻿@{
+    Layout = "~/Views/MainLayout.cshtml";
+    ViewBag.Title = "View all doctors";
+}
+@model List<GorClinic.db.Models.VewModel.DoctorVItem>
+<h2>Список докторов</h2>
+<div style="overflow:auto;width: 650px;">
+<table class="data-table">
+    <thead>
+      <tr>
+        <th>ФИО</th>
+        <th>Адрес</th>
+        <th>Мобильный телефон</th>
+        <th>Домашний телефон</th>
+        <th>График приема</th>
+        <th>Специальность</th>
+        <th>Кабинет</th>
+        <th>Отделение</th>
+        <th>Участок</th>
+        <th>Статус</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model){
+            <tr>
+                <td class="hidden">@Html.DisplayFor(id => item.DoctorId)</td>
+                <td>@Html.DisplayFor(name => item.FIO)</td>
+                <td>@Html.DisplayFor(name => item.Adress)</td>
+                <td>@Html.DisplayFor(name => item.MobilePhone)</td>
+                <td>@Html.DisplayFor(name => item.HomePhone)</td>
+                <td>@Html.DisplayFor(name => item.Schedule)</td>
+                <td><span class="hidden">@Html.DisplayFor(name => item.Specialization.SpecializationId)</span>@Html.DisplayFor(name => item.Specialization.Name)</td>
+                <td><span class="hidden">@Html.DisplayFor(name => item.Cabinet.CabinetId)</span>@Html.DisplayFor(name => item.Cabinet.Number)</td>
+                <td><span class="hidden">@Html.DisplayFor(name => item.Department.DepartmentId)</span>@Html.DisplayFor(name => item.Department.Name)</td>
+                <td><span class="hidden">@Html.DisplayFor(name => item.Area.Id)</span>@Html.DisplayFor(name => item.Area.AreaNumber) - @Html.DisplayFor(name => item.Area.Adresses)</td>
+                <td><span class="hidden">@Html.DisplayFor(name => item.DocStatus.DocStatusId)</span>@Html.DisplayFor(name => item.DocStatus.Status)</td>
+                <td></td>
+            </tr>
+        }
+    </tbody>
+</table>
+    </div>
+    <a href="javascript:void(0);" onclick="showPopUp();" class="add-link">Добавить</a>
+    <div class="pop-up hidden">
+        <div class="overlay"></div>
+        <div class="pop-up-window">
+            <div class="pop-up-form">
+                <input type="hidden" name="doc-id"/>
+                <table class="fields-table">
+                    <tr>
+                        <td><label for="fio" class="label">ФИО</label></td>
+                        <td><input type="text" placeholder="ФИО" name="fio" id="fio"/></td>
+                    </tr>
+                    <tr>
+                        <td><label for="adress" class="label">Адрес</label></td>
+                        <td><input type="text" placeholder="Адрес" name="adress" id="adress"/></td>
+                    </tr>
+                    <tr>
+                        <td><label for="m-phone" class="label">Мобильный телефон</label></td>
+                        <td><input type="text" placeholder="Мобильный телефон" name="m-phone" id="m-phone"/></td>
+                    </tr>
+                    <tr>
+                        <td><label for="h-phone" class="label">Домашний телефон</label></td>
+                        <td><input type="text" placeholder="Домашний телефон" name="h-phone" id="h-phone"/></td>
+                    </tr>
+                    <tr>
+                        <td><label for="schedule" class="label">График работы</label></td>
+                        <td><input type="text" placeholder="График работы" name="schedule" id="schedule"/></td>
+                    </tr>
+                    <tr>
+                        <td><label for="specialization" class="label">Специальность</label></td>
+                        <td>
+                            <select name="specialization" id="specialization">
+                                @foreach (GorClinic.db.Models.VewModel.SpecializationVMItem item in @ViewBag.Specializations)
+                                {
+                                    <option value="@Html.DisplayFor(name => item.SpecializationId)">@Html.DisplayFor(name => item.Name)</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="cabinet" class="label">Кабинет</label></td>
+                        <td>
+                            <select name="cabinet" id="cabinet">
+                                @foreach (GorClinic.db.Models.VewModel.CabinetVMItem item in @ViewBag.Cabinets)
+                                {
+                                    <option value="@Html.DisplayFor(name => item.CabinetId)">@Html.DisplayFor(name => item.Number)</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="department" class="label">Отделение</label></td>
+                        <td>
+                            <select name="department" id="department">
+                                @foreach (GorClinic.db.Models.VewModel.DepartmentVMItem item in @ViewBag.Departments)
+                                {
+                                    <option value="@Html.DisplayFor(name => item.DepartmentId)">@Html.DisplayFor(name => item.Name)</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="area" class="label">Участок</label></td>
+                        <td>
+                            <select name="area" id="area">
+                                @foreach (GorClinic.db.Models.VewModel.AreaVMItem item in @ViewBag.Areas)
+                                {
+                                    <option value="@Html.DisplayFor(name => item.Id)">@Html.DisplayFor(name => item.AreaNumber)</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="doc-status" class="label">Статус</label></td>
+                        <td>
+                            <select name="doc-status" id="doc-status">
+                                @foreach (GorClinic.db.Models.VewModel.DocStatusVMItem item in @ViewBag.DocStatuses)
+                                {
+                                    <option value="@Html.DisplayFor(name => item.DocStatusId)">@Html.DisplayFor(name => item.Status)</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="pop-up-button-bar">
+                <button id="save">Сохранить</button>
+                <button id="cancel">Закрыть</button>
+            </div>
+            <div class="err-msg"></div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $(".data-table tr td:not(td:last-child)").click(function () {
+                var tr = $(this).parent();
+                var doctor = new Object();
+                doctor.id = $("td:nth-child(1)", tr).text().trim();
+                doctor.fio = $("td:nth-child(2)", tr).text().trim();
+                doctor.adress = $("td:nth-child(3)", tr).text().trim();
+                doctor.mPhone = $("td:nth-child(4)", tr).text().trim();
+                doctor.hPhone = $("td:nth-child(5)", tr).text().trim();
+                doctor.schedule = $("td:nth-child(6)", tr).text().trim();
+                doctor.specialization = $("td:nth-child(7) span[class='hidden']", tr).text().trim();
+                doctor.cabinet = $("td:nth-child(8) span[class='hidden']", tr).text().trim();
+                doctor.department = $("td:nth-child(9) span[class='hidden']", tr).text().trim();
+                doctor.area = $("td:nth-child(10) span[class='hidden']", tr).text().trim();
+                doctor.docStatus = $("td:nth-child(11) span[class='hidden']", tr).text().trim();
+                showPopUp(doctor);
+            });
+            $(".data-table tr td:last-child").click(function () {
+                var tr = $(this).parent();
+                var id = $("td:nth-child(1)", tr).text();
+                deleteData(id);
+            });
+            $("button#save").click(function () {
+                var errMsgs = "";
+                var doctor = new Object();
+                doctor.id = $(".pop-up-form input[name='doc-id']").val();
+                doctor.fio = $(".pop-up-form input[name='fio']").val();
+                if (!doctor.fio) {
+                    errMsgs += "Введите ФИО врача<br/>";
+                }
+                doctor.adress = $(".pop-up-form input[name='adress']").val();
+                if (!doctor.adress) {
+                    errMsgs += "Введите адрес<br/>";
+                }
+                doctor.mPhone = $(".pop-up-form input[name='m-phone']").val();
+                if (!doctor.mPhone) {
+                    errMsgs += "Введите номер мобильного телефона<br/>";
+                }
+                doctor.hPhone = $(".pop-up-form input[name='h-phone']").val();
+                if (!doctor.hPhone) {
+                    errMsgs += "Введите номер домашнего телефона<br/>";
+                }
+                doctor.schedule = $(".pop-up-form input[name='schedule']").val();
+                if (!doctor.hPhone) {
+                    errMsgs += "Введите график работы<br/>";
+                }
+                doctor.specialization = $("select[name='specialization'] > option:selected").val();
+                if (!doctor.specialization) {
+                    errMsgs += "Выберите специализацию<br/>";
+                }
+                doctor.cabinet = $("select[name='cabinet'] > option:selected").val();
+                if (!doctor.cabinet) {
+                    errMsgs += "Выберите кабинет<br/>";
+                }
+                doctor.department = $("select[name='department'] > option:selected").val();
+                if (!doctor.department) {
+                    errMsgs += "Выберите отделение<br/>";
+                }
+                doctor.area = $("select[name='area'] > option:selected").val();
+                if (!doctor.area) {
+                    errMsgs += "Выберите участок<br/>";
+                }
+                doctor.docStatus = $("select[name='doc-status'] > option:selected").val();
+                if (!doctor.docStatus) {
+                    errMsgs += "Выберите статус<br/>";
+                }
+                if(errMsgs) {
+                    showErrorMsg(errMsgs);
+                    return;
+                }
+                sendData(doctor);
+            });
+            $("button#cancel").click(function () {
+                $(".pop-up").addClass("hidden");
+                showErrorMsg("");
+            });
+        });
+        function showPopUp(doctor) {
+            var doc = new Object();
+            doc.id = "";
+            doc.fio = "";
+            doc.adress = "";
+            doc.mPhone = "";
+            doc.hPhone = "";
+            doc.schedule = "";
+            doc.specialization = "";
+            doc.cabinet = "";
+            doc.department = "";
+            doc.area = "";
+            doc.docStatus = "";
+            if (doctor) {
+                doc.id = doctor.id;
+                doc.fio = doctor.fio;
+                doc.adress = doctor.adress;
+                doc.mPhone = doctor.mPhone;
+                doc.hPhone = doctor.hPhone;
+                doc.schedule = doctor.schedule;
+                doc.specialization = doctor.specialization;
+                doc.cabinet = doctor.cabinet;
+                doc.department = doctor.department;
+                doc.area = doctor.area;
+                doc.docStatus = doctor.docStatus;
+            }
+            $(".pop-up-form input[name='doc-id']").val(doc.id);
+            $(".pop-up-form input[name='fio']").val(doc.fio);
+            $(".pop-up-form input[name='adress']").val(doc.adress);
+            $(".pop-up-form input[name='m-phone']").val(doc.mPhone);
+            $(".pop-up-form input[name='h-phone']").val(doc.hPhone);
+            $(".pop-up-form input[name='schedule']").val(doc.schedule);
+            $("select[name='specialization'] > option").each(function () {
+                if (this.value === doc.specialization) {
+                    this.selected = true;
+                }
+            });
+            $("select[name='cabinet'] > option").each(function () {
+                if (this.value === doc.cabinet) {
+                    this.selected = true;
+                }
+            });
+            $("select[name='department'] > option").each(function () {
+                if (this.value === doc.department) {
+                    this.selected = true;
+                }
+            });
+            $("select[name='area'] > option").each(function () {
+                if (this.value === doc.area) {
+                    this.selected = true;
+                }
+            });
+            $("select[name='doc-status'] > option").each(function () {
+                if (this.value === doc.docStatus) {
+                    this.selected = true;
+                }
+            });
+            $("div.pop-up").removeClass("hidden");
+        }
+        function sendData(doctor) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Upsert")',
+                data: { jsonDoctor: JSON.stringify(doctor) },
+                cache: false,
+                success: function () { window.location = window.location; },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showErrorMsg(thrownError);
+                },
+                dataType: "html"
+            });
+        }
+        function showErrorMsg(text) {
+            $(".pop-up-window .err-msg").text(text);
+        }
+        function deleteData(id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { id: id },
+                cache: false,
+                success: function () { window.location = window.location; },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showErrorMsg(thrownError);
+                },
+                dataType: "html"
+            });
+        }
+    </script>

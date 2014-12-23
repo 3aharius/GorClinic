@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="GorClinic" namespace="GorClinic.Models.DTO">
+
+  <class name="Department" table="department">
+    <id name="DepartmentId">
+      <column name="departmentid"/>
+      <generator class="sequence">
+        <param name="sequence">department_departmentid_seq</param>
+      </generator>
+    </id>
+    <property name="Name" column="name"/>
+  </class>
+
+  <class name="Cabinet" table="cabinet">
+    <id name="CabinetId">
+      <column name="cabinetid"/>
+      <generator class="sequence">
+        <param name="sequence">cabinet_cabinetid_seq</param>
+      </generator>
+    </id>
+    <property name="Number" column="number"/>
+  </class>
+  
+  <class name="Area" table="area">
+    <id name="Id">
+      <column name="area_id"/>
+      <generator class="sequence">
+        <param name="sequence">area_area_id_seq</param>
+      </generator>
+    </id>
+    <property name="AreaNumber" column="areanumber"/>
+    <property name="Adresses" column="adresses"/>
+  </class>
+
+  <class name="Specialization" table="specialization">
+    <id name="SpecializationId">
+      <column name="specializationid"/>
+      <generator class="sequence">
+        <param name="sequence">specialization_specializationid_seq</param>
+      </generator>
+    </id>
+    <property name="Name" column="name"/>
+  </class>
+
+  <class name="DocStatus" table="docstatus">
+    <id name="DocStatusId">
+      <column name="docstatusid"/>
+      <generator class="sequence">
+        <param name="sequence">docstatus_docstatusid_seq</param>
+      </generator>
+    </id>
+    <property name="Status" column="status"/>
+  </class>
+
+  <class name="Doctor" table="doctor">
+    <id name="DoctorId">
+      <column name="doctorid"/>
+      <generator class="sequence">
+        <param name="sequence">doctor_doctorid_seq</param>
+      </generator>
+    </id>
+    <property name="FIO" column="fio"/>
+    <property name="Adress" column="adress"/>
+    <property name="HomePhone" column="homephone"/>
+    <property name="MobilePhone" column="mobilephone"/>
+    <property name="Schedule" column="schedule"/>
+    <many-to-one fetch="select" column="specializationid" class="Specialization" name="Specialization" insert="true" update="true" lazy="false"/>
+    <many-to-one fetch="select" column="departmentid" class="Department" name="Department" insert="true" update="true" lazy="false"/>
+    <many-to-one fetch="select" column="areaid" class="Area" name="Area" insert="true" update="true" lazy="false"/>
+    <many-to-one fetch="select" column="cabinetid" class="Cabinet" name="Cabinet" insert="true" update="true" lazy="false"/>
+    <many-to-one fetch="select" column="docstatusid" class="DocStatus" name="DocStatus" insert="true" update="true" lazy="false"/>
+  </class>
+
+  <class name="Client" table="client">
+    <id name="ClientId">
+      <column name="clientid"/>
+      <generator class="sequence">
+        <param name="sequence">client_clientid_seq</param>
+      </generator>
+    </id>
+    <property name="FIO" column="fio"/>
+    <property name="Adress" column="adress"/>
+  </class>
+
+  <class name="MedicalCard" table="medicalcard">
+    <id name="MedicalCardId">
+      <column name="medicalcardid"/>
+      <generator class="sequence">
+        <param name="sequence">medicalcard_medicalcardid_seq</param>
+      </generator>
+    </id>
+    <property name="Number" column="number"/>
+    <many-to-one fetch="select" column="clientid" class="Client" name="Client" insert="true" update="true" lazy="false"/>
+  </class>
+
+  <class name="Ticket" table="ticket">
+    <id name="TicketId">
+      <column name="ticketid"/>
+      <generator class="sequence">
+        <param name="sequence">ticket_ticketid_seq</param>
+      </generator>
+    </id>
+    <property name="ReceptionDate" column="receptiondate"/>
+    <many-to-one fetch="select" column="doctorid" class="Doctor" name="Doctor" insert="false" update="false" lazy="false"/>
+    <many-to-one fetch="select" column="ClientId" class="Client" name="Client" insert="false" update="false" lazy="false"/>
+  </class>
+
+  <class name="Role" table="role">
+    <id name="RoleId">
+      <column name="roleid"/>
+      <generator class="sequence">
+        <param name="sequence">role_roleid_seq</param>
+      </generator>
+    </id>
+    <property name="Name" column="name"/>
+  </class>
+  
+  <class name="Page" table="page">
+    <id name="PageId">
+      <column name="page_id"/>
+      <generator class="sequence">
+        <param name="sequence">page_page_id_seq</param>
+      </generator>
+    </id>
+    <property name="Url" column="url"/>
+  </class>
+  
+  <class name="Permission" table="permission">
+    <id name="PermissionId">
+      <column name="permission_id"/>
+      <generator class="sequence">
+        <param name="sequence">permission_permission_id_seq</param>
+      </generator>
+    </id>
+    <property name="IsAllaw" column="is_allaw"/>
+    <many-to-one fetch="select" column="role_id" class="Role" name="Role" insert="false" update="false" lazy="false"/>
+    <many-to-one fetch="select" column="page_id" class="Page" name="Page" insert="false" update="false" lazy="false"/>
+  </class>
+  
+  <class name="User" table="systemuser">
+    <id name="UserId">
+      <column name="systemuserid"/>
+      <generator class="sequence">
+        <param name="sequence">systemuser_systemuserid_seq</param>
+      </generator>
+    </id>
+    <property name="Username" column="username"/>
+    <property name="Password" column="password"/>
+    <property name="IsActive" column="is_active"/>
+    <many-to-one fetch="select" column="RoleId" class="Role" name="Role" insert="true" update="true" lazy="false"/>
+  </class>
+
+  <class name="Topic" table="topic">
+    <id name="TopicId">
+      <column name="topicid"/>
+      <generator class="sequence">
+        <param name="sequence">topic_topicid_seq</param>
+      </generator>
+    </id>
+    <property name="Content" column="content"/>
+    <property name="Title" column="title"/>
+  </class>
+  
+</hibernate-mapping>

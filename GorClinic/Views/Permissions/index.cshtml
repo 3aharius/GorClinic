@@ -1,0 +1,65 @@
+﻿@{
+    Layout = "~/Views/MainLayout.cshtml";
+    ViewBag.Title = "View permissions";
+}
+@model List<GorClinic.db.Models.VewModel.PermissionVMItem>
+<h2>Привелегии для ролей</h2>
+<table class="data-table">
+    <thead>
+      <tr>
+          <th>
+            Роль
+          </th>
+          <th>
+            Страница
+          </th>
+          <th>
+            Привилегия
+          </th>
+      </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model){
+            <tr>
+                <td>@Html.DisplayFor(id => item.PermissionId)</td>
+                <td>@Html.DisplayFor(roleName => item.RoleName)</td>
+                <td>@Html.DisplayFor(pageUrl => item.PageUrl)</td>
+                <td class="not-del">@Html.CheckBoxFor(isAllaw => item.IsAllaw)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+    <button id="save">Сохранить</button>
+    <script>
+        $(document).ready(function () {
+            $("button#save").click(function () {
+                var permissions = [];
+                $(".data-table tbody tr").each(function () {
+                    var permission = new Object();
+                    permission.PermissionId = $("td:nth-child(1)", this).text().trim();
+                    permission.IsAllaw = $("td:nth-child(4) > input[type='checkbox']", this).prop('checked');
+                    permissions.push(permission);
+                });
+                sendData(permissions);
+            });
+            $("button#cancel").click(function () {
+                $(".pop-up").addClass("hidden");
+                showErrorMsg("");
+            });
+        });
+        function sendData(permissions) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Upsert")',
+                data: JSON.stringify(permissions),
+                cache: false,
+                success: function () { window.location = '@Url.Action("index", "Role")'; },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                },
+                dataType: "html",
+                contentType: "application/json",
+            });
+        }
+    </script>
+</html>

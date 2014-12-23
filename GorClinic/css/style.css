@@ -1,0 +1,90 @@
+body {margin:0;color:#089FAF;font-size:10px}
+.fleft {float:left}
+.fright {float:right}
+.fclear {clear:both}
+.inner_copy, .inner_copy a {border:0;float:right;background:#fff;color:#f00;width:50%;line-height:10px;font-size:10px;margin:-220% 0 0 0;overflow:hidden;padding:0}
+.tab {background-image:url(/img/tab.jpg);width:159px;background-repeat:no-repeat;line-height:49px;font-family:Arial, Helvetica, sans-serif;font-size:14px;text-align:center;font-weight:bold;color:#fff}
+.top {font-family:Arial, Helvetica, sans-serif;font-size:14px;text-align:center;font-weight:bold;text-decoration:none;color:#fff}
+.top:hover {font-family:Arial, Helvetica, sans-serif;font-size:14px;text-align:center;font-weight:bold;color:#000}
+.small {font-family:Arial, Helvetica, sans-serif;font-size:10px;color:#089FAF;text-decoration:none}
+.small:hover {font-family:Arial, Helvetica, sans-serif;font-size:10px;color:#089FAF;text-decoration:none}
+.heading_2 {line-height:30px;background-color:#10ADBE;font-family:Arial, Helvetica, sans-serif;font-size:17px;text-align:left;padding-left:10px;border:1px solid #DFDFDF;font-weight:bold;color:#fff}
+.left_link {line-height:22px;background-color:#DFDFDF;font-family:Arial, Helvetica, sans-serif;font-size:12px;text-align:left;padding-left:10px;border:1px solid #DFDFDF;font-weight:normal;color:#000}
+.leftlink {background-color:#DFDFDF;font-family:Arial, Helvetica, sans-serif;font-size:12px;text-decoration:none;color:#000}
+.leftlink:hover {background-color:#DFDFDF;font-size:12px;text-align:left;font-weight:normal;color:#000}
+.heafing {font-family:Arial, Helvetica, sans-serif;font-size:34px;text-align:left;padding-left:10px;font-weight:bold;padding-bottom:10px;color:#10ADBE}
+.text {font-family:Arial, Helvetica, sans-serif;font-size:12px;line-height:17px;text-align:left;padding-bottom:15px;padding-left:10px;font-weight:normal;color:#585858}
+.heafing3 {font-family:Arial, Helvetica, sans-serif;font-size:18px;padding-bottom:10px;text-align:left;padding-left:10px;font-weight:normal;color:#0C0C0C}
+.copy_bg {background-color:#089FAF;font-size:10px;font-family:Arial, Helvetica, sans-serif;color:#fff;text-align:center}
+.s_link {background-color:#089FAF;font-size:10px;font-family:Arial, Helvetica, sans-serif;color:#fff;text-decoration:none;padding-left:15px;padding-right:10px;text-align:center}
+.s_link:hover {background-color:#089FAF;font-size:10px;font-family:Arial, Helvetica, sans-serif;color:#fff;text-align:center}
+.white {background-color:#EBE8D9}
+.hidden {display: none;}
+tr.topic {cursor:pointer;}
+tr.topic:hover {background-color: #dedede;outline:2px solid #10ADBE;}
+.topic-managmnent {text-align:right; margin-bottom: 5px;}
+.topic-managmnent > a {text-decoration:none; margin-right:10px;}
+.data-table {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    width: 480px;
+    text-align: left;
+    border-collapse: collapse;
+    border: 1px solid #69c;
+    margin: 20px;
+    overflow:auto;
+}
+.data-table td:nth-child(1) {display:none;}
+.data-table tr:hover > td:last-child:not([class='not-del']) {
+    background: url("/img/delete.png") no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+.data-table thead {
+    display: table-header-group;
+    font-size: 100%;
+    vertical-align: baseline;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0;
+    background: 0 0;
+}
+.data-table th {
+    font-weight: normal;
+    font-size: 14px;
+    color: #039;
+    border-bottom: 1px dashed #69c;
+    padding: 12px 17px;
+}
+.data-table tbody tr:hover {cursor: pointer;background-color: #dedede;}
+.overlay {
+    position:fixed;
+    top:0;
+    left:0;
+    background:rgba(0,0,0,0.6);
+    z-index:5;
+    width:100%;
+    height:100%;
+    opacity:2;
+}
+.add-link {margin: 20px;text-decoration:none;display: block;}
+.pop-up .pop-up-window {
+    position:fixed;
+    top: 100px;
+    margin: auto;
+    z-index: 9999;
+    width: 400px;
+    background-color: #EBE8D9;
+    border: 2px solid #69c;
+    overflow-y:auto;
+    max-height:400px;
+}
+.pop-up-window .pop-up-form {margin:5px;}
+.pop-up-window .err-msg {color: #f00;font-size:110%;margin-bottom:5px;}
+.pop-up-window .popup-header {width: 100%;margin-bottom:5px}
+.pop-up-form .fields-table {text-align: left;width: 100%;}
+.pop-up-form label, .pop-up-form input, .pop-up-form textarea {font-size:14px;}
+.success-save {color: #00ff21;font-size:14px;width: 100%;}
+.error-save {color: #f00;font-size:14px;width: 100%;}
+.pop-up-form textarea {display: block;width: 98%;height: 200px;}

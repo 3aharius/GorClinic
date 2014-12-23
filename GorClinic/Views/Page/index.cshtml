@@ -1,0 +1,112 @@
+﻿@{
+    Layout = "~/Views/MainLayout.cshtml";
+    ViewBag.Title = "View all pages";
+}
+@model List<GorClinic.db.Models.VewModel.PageVMItem>
+<h2>Страницы</h2>
+<table class="data-table">
+    <thead>
+      <tr>
+      <th>URL</th>
+      <th></th>
+      </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model){
+            <tr>
+                <td>@Html.DisplayFor(id => item.PageId)</td>
+                <td>@Html.DisplayFor(number => item.Url)</td>
+                <td></td>
+            </tr>
+        }
+    </tbody>
+</table>
+    <a href="javascript:void(0);" onclick="showPopUp();" class="add-link">Добавить</a>
+    <div class="pop-up hidden">
+        <div class="overlay"></div>
+        <div class="pop-up-window">
+            <h2 class="popup-header">Редактирование страницы</h2>
+            <div class="pop-up-form">
+                <input type="hidden" name="page-id"/>
+                <table class="fields-table">
+                    <tr>
+                        <td><label for="page-url" class="label">URL</label></td>
+                        <td><input type="text" placeholder="URL" name="page-url" id="page-url"/></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="pop-up-button-bar">
+                <button id="save">Сохранить</button>
+                <button id="cancel">Закрыть</button>
+            </div>
+            <div class="err-msg"></div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $(".data-table tr td:not(td:last-child)").click(function () {
+                var tr = $(this).parent();
+                var pageId = $("td:nth-child(1)", tr).text();
+                var pageUrl = $("td:nth-child(2)", tr).text();
+                showPopUp(pageId, pageUrl);
+            });
+            $(".data-table tr td:last-child").click(function () {
+                var tr = $(this).parent();
+                var id = $("td:nth-child(1)", tr).text();
+                deleteData(id);
+            });
+            $("button#save").click(function () {
+                var url = $(".pop-up-form input[name='page-url']").val();
+                if (!url) {
+                    showErrorMsg("заполните все поля");
+                    return;
+                }
+                var id = $(".pop-up-form input[name='page-id']").val();
+                sendData(id, url);
+            });
+            $("button#cancel").click(function () {
+                $(".pop-up").addClass("hidden");
+                showErrorMsg("");
+            });
+        });
+        function showPopUp(id, url) {
+            var pageUrl = "";
+            var pageId = "";
+            if (id && url) {
+                pageId = id;
+                pageUrl = url;
+            }
+            $(".pop-up-form input[name='page-id']").val(pageId);
+            $(".pop-up-form input[name='page-url']").val(pageUrl);
+            $("div.pop-up").removeClass("hidden");
+        }
+        function sendData(id, url) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Upsert")',
+                data: { id: id, url: url },
+                cache: false,
+                success: function () { window.location = window.location; },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showErrorMsg(thrownError);
+                },
+                dataType: "html"
+            });
+        }
+        function showErrorMsg(text) {
+            $(".pop-up-window .err-msg").text(text);
+        }
+        function deleteData(id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { id: id },
+                cache: false,
+                success: function () { window.location = window.location; },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showErrorMsg(thrownError);
+                },
+                dataType: "html"
+            });
+        }
+    </script>

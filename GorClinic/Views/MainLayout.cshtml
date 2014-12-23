@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("/css/style.css")" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="@Url.Content("/js/jquery-1.11.1.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("/js/json2.js")"></script>
+</head>
+<body>
+    <table width="881" border="0" align="center" cellpadding="0" cellspacing="0" class="white">
+	    <tr>
+		    <td width="292"><img src="@Url.Content("/img/logo.jpg")" width="292" height="79" alt=""/></td>
+		    <td width="500" align="right" valign="top" style="padding-top:5px; padding-right:10px;"><a href="#" class="small">Узнать больше</a>	 |	 <a href="#" class="small">Написать email</a>|	 <a href="#" class="small">Подписаться на рассылку</a></td>
+	    </tr>
+	    <tr>
+		    <td colspan="2"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+			    <tr>
+				    <td class="tab"><a href="#" class="top">Домашняя страница</a></td>
+				    <td class="tab"><a href="#" class="top">Услуги</a></td>
+				    <td class="tab"><a href="#" class="top">Врачи</a></td>
+				    <td class="tab"><a href="#" class="top">Заказ талонов</a></td>
+				    <td class="tab"><a href="#" class="top">Связаться с нами</a></td>
+				    <td>&nbsp;</td>
+			    </tr>
+		    </table></td>
+	    </tr>
+	    <tr>
+		    <td colspan="2" style="border-top:2px solid #10ADBE;" ><a href="#" ><img src="@Url.Content("/img/banner.jpg")" width="881" height="329" border="0" alt=""/></a></td>
+	    </tr>
+	    <tr>
+		    <td colspan="2" style="padding-top:8px; padding-left:4px;"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+			    <tr>
+				    <td width="225" valign="top">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+					    <tr>
+						    <td class="heading_2">Меню</td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "Home")' class = "leftlink">Главная страница</a></td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "Area")' class = "leftlink">Участки</a></td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "Cabinet")' class = "leftlink">Кабинеты</a></td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "Client")' class = "leftlink">Пациенты</a></td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "Department")' class = "leftlink">Отделения</a></td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "DocStatus")' class = "leftlink">Статусы врачей</a></td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "Doctor")' class = "leftlink">Врачи</a></td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "Specialization")' class = "leftlink">Специальности</a></td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "Page")' class = "leftlink">Страницы</a></td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "Role")' class = "leftlink">Роли</a></td>
+					    </tr>
+					    <tr>
+						    <td class="left_link"><a href='@Url.Action("Index", "User")' class = "leftlink">Пользователи</a></td>
+					    </tr>
+				    </table>
+				    </td>
+				    <td align="center" valign="top">
+                        @RenderBody()
+				    </td>
+			    </tr>
+		    </table></td>
+	    </tr>
+	    <tr>
+		    <td colspan="2" class="copy_bg" style="padding-top:8px;padding-left:4px">
+			    <a href="#" class="s_link">Служба поддержки</a>
+			    <a href="#" class="s_link">Создать аккаунт</a>
+			    <a href="#" class="s_link">Карьера</a>
+			    <a href="#" class="s_link">Связаться с нами</a>
+		    </td>
+	    </tr>
+	    <tr>
+		    <td colspan="2" class="copy_bg" style="padding:11px">
+			    <center>
+				    <div class="fleft">ысе права защищены</div>
+				    </div class="fclear"></div>
+			    </center>
+		    </td>
+	    </tr>
+    </table>
+</body>
+</body>
+</html>

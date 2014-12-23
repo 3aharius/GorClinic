@@ -1,0 +1,210 @@
+﻿@{
+    Layout = "~/Views/MainLayout.cshtml";
+    ViewBag.Title = "View all clients";
+}
+@model List<GorClinic.db.Models.VewModel.ClientVMItem>
+<h2>Пациент</h2>
+<table class="data-table">
+    <thead>
+      <tr>
+      <th>ФИО</th>
+      <th>Адрес</th>
+      <th></th>
+      </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model){
+            <tr>
+                <td>@Html.DisplayFor(id => item.ClientId)</td>
+                <td>@Html.DisplayFor(number => item.FIO)</td>
+                <td>@Html.DisplayFor(adress => item.Adress)</td>
+                <td class="medical-cards hidden">
+                    @foreach(var card in item.MedicalCards){
+                        <div class="card">
+                            <span class="card-id">@Html.DisplayFor(id => card.MedicalCardId)</span>
+                            <span class="card-number">@Html.DisplayFor(id => card.Number)</span>
+                        </div>
+                    }
+                </td>
+                <td></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="javascript:void(0);" onclick="showPopUp();" class="add-link">Добавить</a>
+    <div class="pop-up hidden">
+        <div class="overlay"></div>
+        <div class="pop-up-window">
+            <h2 class="popup-header">Редактирование пациента</h2>
+            <div class="pop-up-form">
+                <input type="hidden" name="client-id"/>
+                <table class="fields-table">
+                    <tr>
+                        <td><label for="client-fio" class="label">ФИО</label></td>
+                        <td><input type="text" placeholder="ФИО" name="client-fio" id="client-fio"/></td>
+                    </tr>
+                    <tr>
+                        <td><label for="client-adress" class="label">Адрес</label></td>
+                        <td><input type="text" placeholder="Адрес" name="client-adress" id="client-adress"/></td>
+                    </tr>
+                </table>
+                <h2 class="popup-header">Карточки</h2>
+                <table class="fields-table cards"></table>
+                <div class="messages"></div>
+                <div><a href="javascript:void(0);" id="append-card" class="add-link">добавить карту</a></div>
+            </div>
+            <div class="pop-up-button-bar">
+                <button id="save-client">Сохранить</button>
+                <button id="cancel">Закрыть</button>
+            </div>
+            <div class="err-msg"></div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $(".data-table tr td:not(td:last-child)").click(function () {
+                var tr = $(this).parent();
+                var clientId = $("td:nth-child(1)", tr).text();
+                var fio = $("td:nth-child(2)", tr).text();
+                var adress = $("td:nth-child(3)", tr).text();
+                var cards = [];
+                $("td:nth-child(4) div.card", tr).each(function () {
+                    var card = new Object();
+                    card.id = $("span.card-id", this).text();
+                    card.number = $("span.card-number", this).text();
+                    cards.push(card);
+                });
+                showPopUp(clientId, fio, adress, cards);
+            });
+            $(".data-table tr td:last-child").click(function () {
+                if ($("td:nth-child(4) div.card").children().length > 0) {
+                    alert("Нельзя удалить пациента с заведенной карточкой!");
+                    return;
+                }
+                var tr = $(this).parent();
+                var clientId = $("td:nth-child(1)", tr).text();
+                deleteData(clientId);
+            });
+            $("button#save-client").click(function () {
+                var fio = $(".pop-up-form input[name='client-fio']").val();
+                var adress = $(".pop-up-form input[name='client-adress']").val();
+                if (!fio || !adress) {
+                    showErrorMsg("заполните все поля");
+                    return;
+                }
+                var id = $(".pop-up-form input[name='client-id']").val();
+                sendData(id, fio, adress);
+            });
+            $("button#cancel").click(function () {
+                window.location = window.location;
+            });
+            $(".pop-up-form a#append-card").click(function () {
+                var card = new Object();
+                card.id = "";
+                card.number = "";
+                appentCard(card);
+            });
+        });
+        function showPopUp(id, fio, adress, cards) {
+            $(".pop-up-form > table.cards").empty();
+            var clientFio = "";
+            var clientAdress = "";
+            var clientId = "";
+            if (id && fio && adress) {
+                clientFio = fio;
+                clientAdress = adress;
+                clientId = id;
+            }
+            $(".pop-up-form input[name='client-id']").val(clientId);
+            $(".pop-up-form input[name='client-fio']").val(clientFio);
+            $(".pop-up-form input[name='client-adress']").val(clientAdress);
+            if (cards) {
+                var card = null;
+                while (card = cards.shift()) {
+                    appentCard(card);
+                }
+            }
+            $("div.pop-up").removeClass("hidden");
+        }
+        function appentCard(card) {
+            $(".pop-up-form table.cards").append("<tr>" +
+                "<td class='hidden'><input type='hidden' name='card-id' value='" + card.id + "' /></td>" +
+                "<td><label class='label'>Номер карты</label></td>" +
+                "<td><input type='text' placeholder='Номер карты' name='card-number' value='" + card.number + "'/></td>" +
+                "<td>" +
+                "<a href='javascript:void(0);' onclick='removeCard(this);' style='margin-right:5px;'>Удалить</a>" +
+                "<a href='javascript:void(0);' onclick='saveCard(this);'>Сохранить</a>" +
+                "</td>" +
+            "</tr>");
+        }
+        function sendData(id, fio, adress) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Upsert")',
+                data: { id: id, fio: fio, adress: adress },
+                cache: false,
+                success: function () { window.location = window.location; },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showErrorMsg(thrownError);
+                },
+                dataType: "html"
+            });
+        }
+        function showErrorMsg(text) {
+            $(".pop-up-window .err-msg").text(text);
+        }
+        function deleteData(id) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                data: { id: id },
+                cache: false,
+                success: function () { window.location = window.location; },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    showErrorMsg(thrownError);
+                },
+                dataType: "html"
+            });
+        }
+        function removeCard(elem) {
+            var tr = $(elem).parent().parent();
+            var id = $("input[name='card-id']", tr).val();
+            if (!id) {
+                tr.remove();
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "MedicalCard")',
+                data: { id: id },
+                cache: false,
+                success: function () { tr.remove();},
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".messages").append("<div class='error-save'>Ошибка сохранения изменений!</div>");
+                    window.setTimeout(function () { $(".messages .error-save").remove(); }, 1000);
+                },
+                dataType: "html"
+            });
+        }
+        function saveCard(elem) {
+            var tr = $(elem).parent().parent();
+            var id = $("input[name='card-id']", tr).val();
+            var clientId = $(".pop-up-form input[name='client-id']").val();
+            var number = $("input[name='card-number']", tr).val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Upsert", "MedicalCard")',
+                data: { id: id, number: number, clientId: clientId },
+                cache: false,
+                success: function () {
+                    $(".messages").append("<div class='success-save'>Изменения сохранены успешно!</div>");
+                    window.setTimeout(function () { $(".messages .success-save").remove(); }, 1000);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".messages").append("<div class='error-save'>Ошибка сохранения изменений!</div>");
+                    window.setTimeout(function () { $(".messages .error-save").remove(); }, 1000);
+                },
+                dataType: "html"
+             });
+        }
+    </script>
